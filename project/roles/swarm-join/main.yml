@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+    - name: Join the swarm
+      shell: "docker swarm join --token {{ lookup('file', '/tmp/dsm_mt') }} {{ lookup('file', '/tmp/dsm_ip') }}:2377"
+      when: "docker_info.stdout.find('Swarm: inactive') > 0"
+      retries: 5
+      delay: 5
