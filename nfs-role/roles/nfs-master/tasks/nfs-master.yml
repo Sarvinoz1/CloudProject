@@ -1,0 +1,38 @@
+---
+  - name: install nfs-utils
+    yum: 
+      name: nfs-utils
+      state: latest
+
+  - name: Create a mountable directory if it does not exist
+    file:
+      path: /var/nfs/shared # Directory that you want to share
+      state: directory
+      owner: ansible
+      group: ansible
+      mode: '0775'
+
+  - name: enable rpcbind nfslock nfs
+    service:
+      name: "{{ item }}"
+      enabled: yes
+    with_items:
+      - rpcbind
+      - nfslock
+      - nfs
+
+  - name: Add Shared directory path in the exports file.
+    lineinfile:
+      path: /etc/exports
+      regexp: '^/var/nfs/shared'
+      line: '/var/nfs/shared    *(rw,sync,no_root_squash)'
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: NFS apply change configrue
+    shell: systemctl reload nfs;exportfs -a
+
+  - name: Restart the NFS service
+    shell: systemctl restart nfs-server
+

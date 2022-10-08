@@ -1,0 +1,17 @@
+---
+  - name : NFS Server Configuration
+    hosts: nfs-servers
+    become: yes
+    roles:
+      - install-packages
+      - disable-se-fw
+
+  - name: Configure NFS Master Server
+    hosts: nfs-servers
+    roles:
+      - nfs-master
+
+  - name: Configure NFS client Servers
+    hosts: nfs-clients
+    roles:
+      - nfs-clients
