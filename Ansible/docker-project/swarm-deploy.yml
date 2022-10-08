@@ -1,0 +1,36 @@
+---
+  - name: setup pre-requisites
+    become: yes
+    hosts: docker-nodes
+    remote_user: ansible
+    become_method: sudo
+    gather_facts: false
+    roles:
+      - install-common-packages
+
+  - name: Disable SElinux and Firewall
+    hosts: docker-nodes
+    roles:
+      - disable-selinux-firewalld 
+
+  - name: Remove older version of docker
+    hosts: docker-nodes
+    roles:
+      - remove-old-version
+
+  - name: install docker
+    hosts: docker-nodes
+    roles:
+      - docker-installation
+
+  - name: initialize docker swarm
+    hosts: swarm-managers
+    roles:
+      - docker-swarm-init
+
+  - name: add workers to the swarm
+    hosts: swarm-workers
+    roles:
+      - docker-swarm-join
+
+
