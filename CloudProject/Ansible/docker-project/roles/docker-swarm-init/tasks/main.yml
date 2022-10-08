@@ -3,7 +3,6 @@
     shell: docker node ls
     register: swarm_status
     ignore_errors: yes
-    when: swarm_status.rc == 0
     tags: swarm
 
   - name: Create primary swarm manager
