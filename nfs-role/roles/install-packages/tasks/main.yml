@@ -1,5 +1,6 @@
 ---
   - name: Install Commom Packages
+    become: yes
     yum: 
       name: 
         - bind-utils

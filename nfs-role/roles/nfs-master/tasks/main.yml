@@ -1,8 +1,12 @@
 ---
   - name: install nfs-utils
     yum: 
-      name: nfs-utils
+      name: 
+        - nfs-utils
       state: latest
+
+  - name: Create share directory
+    shell: mkdir -p /var/nfs/shared
 
   - name: Create a mountable directory if it does not exist
     file:
@@ -24,14 +28,14 @@
   - name: Add Shared directory path in the exports file.
     lineinfile:
       path: /etc/exports
-      regexp: '^/var/nfs/shared'
       line: '/var/nfs/shared    *(rw,sync,no_root_squash)'
-      owner: root
-      group: root
-      mode: 0644
 
-  - name: NFS apply change configrue
-    shell: systemctl reload nfs;exportfs -a
+
+  # - name: NFS apply change configrue
+  #   shell: systemctl restart nfs-server
+
+  - name: exportfs
+    shell: exportfs -a
 
   - name: Restart the NFS service
     shell: systemctl restart nfs-server

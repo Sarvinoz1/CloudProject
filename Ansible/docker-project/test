@@ -1,2 +1,0 @@
-ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
-bky6uhg2agdx        webservice          replicated          3/3                 httpd:latest        *:80->80/tcp

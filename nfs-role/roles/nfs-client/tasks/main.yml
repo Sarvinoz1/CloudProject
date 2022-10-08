@@ -1,5 +1,6 @@
 ---
   - name: install nfs-utils
+    become: yes
     yum: 
       name: nfs-utils 
       state: latest
@@ -13,4 +14,4 @@
       mode: '0775'
 
   - name: Mount volumn
-    shell: sudo mount -t nfs 192.168.33.16:/var/nfs/shared /clientshare
+    shell: sudo mount -t nfs 192.168.33.150:/var/nfs/shared /clientshare
