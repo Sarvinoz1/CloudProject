@@ -1,0 +1,10 @@
+---
+  - name: Workers Leaving the Swarm
+    hosts: swarm-workers
+    roles:
+      - docker-swarm-leave
+
+  - name: Managers Leaving the Swarm
+    hosts: swarm-managers
+    roles:
+      - docker-swarm-leave
