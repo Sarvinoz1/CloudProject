@@ -1,0 +1,6 @@
+--- 
+- name: install and Configure MySQL
+  hosts: db-mysql
+  roles: 
+    - role: /ansible/project/geerlingguy.mysql/
+      become: yes 

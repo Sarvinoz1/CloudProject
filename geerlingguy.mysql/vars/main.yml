@@ -1,0 +1,47 @@
+mysql_root_password: "password"
+mysql_root_password: "theR00tP455w0rd"
+mysql_databases:
+
+  - name: Team1mod
+
+    encoding: latin1
+
+    collation: latin1_general_ci
+
+  - name: sysbench
+
+    encoding: latin1
+
+    collation: latin1_general_ci
+
+  - name: Team2
+
+    encoding: latin1
+
+    collation: latin1_general_ci
+
+  - name: Team3
+
+    encoding: latin1
+
+    collation: latin1_general_ci
+
+      
+
+mysql_users:
+
+  - name: Team1_user
+
+    host: "%"
+
+    password: mySh0pPassw0rd
+
+    priv: "myshop.*:ALL"
+
+  - name: sysbench_user
+
+    host: "192.168.0.%"
+
+    password: sysBenchPassw0rd
+
+    priv: "sysbench.*:ALL"
