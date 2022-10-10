@@ -1,0 +1,56 @@
+---
+- name: Setup dns master
+ # remote_user: root
+  hosts: dnsmaster11
+  become: yes
+  #become_method: sudo 
+  tasks:
+  - name: Install packages
+    yum:
+      name:
+        - bind
+        - bind-utils
+        - epel-release
+      state: latest
+
+  - name: Configure dns master
+    template:
+      src: dnsm.j2
+      dest: /etc/named.conf
+      owner: root
+      group: named
+
+
+  - name: create ziyotek1.flz 
+    file: 
+      path: /var/named/ziyotek1.flz
+      state: touch
+      owner: root
+      group: named
+
+  - name: copying .flz file
+    template:
+      src:  flz.j2
+      dest: /var/named/ziyotek1.flz
+      owner: root
+      group: named
+      
+  - name: create ziyotek1.rlz 
+    file: 
+      path: /var/named/ziyotek1.rlz
+      state: touch
+      owner: root
+      group: named 
+
+  - name: copying .rlz file
+    template:
+      src: rlz.j2
+      dest: /var/named/ziyotek1.rlz
+      owner: root
+      group: named
+
+  - name: Start named
+    service:
+      name: named
+      enabled: yes
+      state: restarted
