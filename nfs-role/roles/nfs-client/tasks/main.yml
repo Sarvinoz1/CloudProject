@@ -1,6 +1,6 @@
 ---
   - name: install nfs-utils
-    become: yes
+    become: true
     yum: 
       name: nfs-utils 
       state: latest
