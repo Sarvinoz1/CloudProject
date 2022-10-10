@@ -1,28 +1,21 @@
 ---
 - name: Setup dns master
- # remote_user: root
-  hosts: dnsmaster11
+  hosts: dns
   become: yes
-  #become_method: sudo 
+  roles:
+    - disable-se-fw
+    - install-packages
+
+- name: Setup localhost
+  hosts: localhost
+  become: yes
+  roles:
+    - disable-se-fw
+    - install-packages
+
+- name: Setup dns master
+  hosts: dnsmaster11
   tasks:
-  - name: Disable SELinux
-    selinux:
-      state: disabled
-
-  - name: Disable the firewalld service.
-    service:
-      name: firewalld
-      state: stopped
-      enabled: no
-
-  - name: Install packages
-    yum:
-      name:
-        - bind
-        - bind-utils
-        - epel-release
-      state: latest
-
   - name: Configure dns master
     template:
       src: dnsm.j2
@@ -58,26 +51,6 @@
       owner: root
       group: named
       
-  - name: Install packages
-    hosts: dns-clients
-    yum:
-      name:
-        - bind
-        - bind-utils
-        - epel-release
-        - man
-        - man-pages
-        - mlocate
-        - sysstat
-        - bash-completion
-      state: latest 
-
-  - name: Enable sysstat
-    service:
-      name: sysstat
-      enabled: true
-      state: started
-
   - name: Start named
     service:
       name: named
