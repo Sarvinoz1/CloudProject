@@ -1,0 +1,45 @@
+---
+# tasks file for ftpserver
+- name: Install vsftpd Server
+  yum:
+    name: vsftpd
+
+- name: Add user ftpuser
+  user:
+    name: "ftpuser"
+    password: "password"
+    state: present
+
+- name: Adding line into /etc/vsftpd/vsftpd.conf.
+  lineinfile:
+    dest: /etc/vsftpd/vsftpd.conf
+    line: 'anon_root=/var/ftp/pub'
+    insertafter: 'anonymous_enable=YES'
+    state: present
+
+- name: Systemctl enable vsftpd
+  systemd:
+    name: vsftpd
+    enabled: yes
+  
+- name: Systemctl restart vsftpd
+  systemd: 
+    state: restarted
+    name: vsftpd
+
+- name: Systemctl stop firewalld
+  tags: run_this
+  systemd:
+    name: firewalld
+    state: stopped
+
+- name: Disable SElinux
+  replace:
+    path: /etc/selinux/config
+    regexp: 'SELINUX=enforcing'
+    replace: 'SELINUX=disabled'
+
+- name: Install chronyd Server
+  yum:
+    name: chrony
+
