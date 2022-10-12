@@ -1,0 +1,75 @@
+$TTL 1D
+@       IN SOA  prdx-nsmaster112.ziyotek1.local. root.prdx-nsmaster112.ziyotek1.local. (
+                                        3        ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+
+; name servers NS records
+@               IN      NS      prdx-nsmaster112.ziyotek1.local.
+@               IN      NS      dnss1.ziyotek1.local.
+@               IN      NS      dnss2.ziyotek1.local.
+
+@               IN      A       192.168.33.125
+@               IN      A       192.168.33.130
+@               IN      A       192.168.33.131
+
+; name servers PTR records
+10              IN      PTR     prdx-ntp11.ziyotek1.local.
+11              IN      PTR     prdx-ntp21.ziyotek1.local.
+12              IN      PTR     prdx-nsmaster11.ziyotek1.local.
+13              IN      PTR     prdx-nsworker11.ziyotek1.local.
+14              IN      PTR     prdx-nsworker21.ziyotek1.local.
+15              IN      PTR     prdx-ftp11.ziyotek1.local.
+16              IN      PTR     prdx-nfs11.ziyotek1.local.
+17              IN      PTR     prdx-db116.ziyotek1.local.
+18              IN      PTR     prdx-webserver116.ziyotek1.local.
+19              IN      PTR     prdx-webserver216.ziyotek1.local.
+33              IN      PTR     prdx-webserver117.ziyotek1.local.
+34              IN      PTR     prdx-webserver217.ziyotek1.local.
+35              IN      PTR     prdx-webserver317.ziyotek1.local.
+20              IN      PTR     prdx-webserver316.ziyotek1.local.
+21              IN      PTR     prdx-haproxy116.ziyotek1.local.
+22              IN      PTR     prdx-nagios11.ziyotek1.local.
+23              IN      PTR     prdx-ldap11.ziyotek1.local.
+24              IN      PTR     prdx-ansible11.ziyotek1.local.
+29              IN      PTR     prdx-dmaster11.ziyotek1.local.
+30              IN      PTR     prdx-dworker11.ziyotek1.local.
+31              IN      PTR     prdx-ansible301.ziyotek1.local.
+32              IN      PTR     prdx-dworker21.ziyotek1.local.
+36              IN      PTR     prdx-haproxy117.ziyotek1.local.
+125             IN      PTR     prdx-nsmaster112.ziyotek1.local.
+130             IN      PTR     dnss1.ziyotek1.local.
+131             IN      PTR     dnss2.ziyotek1.local.
+
+; name servers A records
+prdx-nsmaster112        IN      A       192.168.33.125
+dnss1                   IN      A       192.168.33.130
+dnss2                   IN      A       192.168.33.131
+prdx-ntp11              IN      A       192.168.33.10
+prdx-ntp21              IN      A       192.168.33.11
+prdx-nsmaster11         IN      A       192.168.33.12
+prdx-nsworker11         IN      A       192.168.33.13
+prdx-nsworker21         IN      A       192.168.33.14
+prdx-ftp11              IN      A       192.168.33.15
+prdx-nfs11              IN      A       192.168.33.16
+prdx-db116              IN      A       192.168.33.17
+prdx-db117              IN      A       192.168.33.32
+prdx-webserver116       IN      A       192.168.33.18
+prdx-webserver117       IN      A       192.168.33.33
+prdx-webserver216       IN      A       192.168.33.19
+prdx-webserver217       IN      A       192.168.33.34
+prdx-webserver316       IN      A       192.168.33.20
+prdx-webserver317       IN      A       192.168.33.35
+prdx-haproxy116         IN      A       192.168.33.21
+prdx-haproxy117         IN      A       192.168.33.36
+prdx-nagios11           IN      A       192.168.33.22
+prdx-ldap11             IN      A       192.168.33.23
+prdx-ansible11          IN      A       192.168.33.24
+prdx-dmaster11          IN      A       192.168.33.29
+prdx-dworker11          IN      A       192.168.33.30
+prdx-dworker21          IN      A       192.168.33.31
+
+
+

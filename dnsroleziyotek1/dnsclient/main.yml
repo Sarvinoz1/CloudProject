@@ -1,5 +1,6 @@
 ---
 - name: Adding DNS server ip to configuration file 
+  hosts: client126
   become: true 
   become_method: sudo 
   tasks:
@@ -8,4 +9,13 @@
         regexp: '8.8.8.8'
         replace: '192.168.33.125'
         backup: yes
-  
+    - lineinfile:
+        path: /etc/resolv.conf 
+        line: "nameserver 192.168.33.131"
+        state: present
+        backup: yes  
+    - lineinfile:
+        path: /etc/resolv.conf 
+        line: "nameserver 192.168.33.130"
+        state: present
+        backup: yes  
