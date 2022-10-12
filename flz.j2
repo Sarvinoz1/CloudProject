@@ -1,0 +1,38 @@
+$TTL 86400
+@       IN SOA  prdx-nsmaster112.ziyotek1.local. root.prdx-nsmaster112.ziyotek1.local. (
+                                        1001        ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+
+; name servers NS records
+                IN      NS      prdx-nsmaster112.ziyotek1.local.
+                IN      NS      prdx-nsworker11.ziyotek1.local.
+                IN      NS      prdx-nsworker21.ziyotek1.local.
+
+
+; name servers A records
+prdx-ntp11     IN      A       192.168.33.10
+prdx-ntp21     IN      A       192.168.33.11
+prdx-ftp11     IN      A       192.168.33.15
+prdx-nfs11     IN      A       192.168.33.16
+prdx-db116     IN      A       192.168.33.17
+prdx-db117     IN      A       192.168.33.32
+prdx-webserver116   IN      A       192.168.33.18
+prdx-webserver117    IN     A       192.168.33.33
+prdx-webserver216    IN     A       192.168.33.19
+prdx-webserver217    IN     A       192.168.33.34
+prdx-webserver316    IN     A       192.168.33.20
+prdx-webserver317    IN    A       192.168.33.35
+prdx-haproxy116      IN    A       192.168.33.21
+prdx-haproxy117      IN    A       192.168.33.21
+prdx-nagios11        IN    A       192.168.33.36
+prdx-ldap11         IN    A       192.168.33.23
+prdx-ansible11      IN    A       192.168.33.24
+prdx-dmaster11      IN    A       192.168.33.29
+prdx-dworker11      IN    A       192.168.33.30
+prdx-dworker21      IN    A       192.168.33.31
+prdx-nsmaster112    IN    A       192.168.33.125
+prdx-nsworker11     IN    A       192.168.33.13
+prdx-nsworker21     IN    A       192.168.33.14

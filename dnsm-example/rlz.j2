@@ -1,0 +1,44 @@
+$TTL 1D
+@       IN SOA  dns.ziyotek1.local. root.dns.ziyotek1.local. (
+                                        0        ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+
+; name servers NS records
+@               IN      NS      dns.ziyotek1.local.
+@               IN      PTR     ziyotek1.local.
+
+; name servers A records
+dns                     IN      A       192.168.1.7
+ntp                     IN      A       192.168.1.6
+nfs                     IN      A       192.168.1.17
+web                     IN      A       192.168.1.10
+db                      IN      A       192.168.1.9
+ansible                 IN      A       192.168.1.41
+
+; name servers PTR records
+6               IN      PTR     ntp.ziyotek1.local.
+7               IN      PTR     dns.ziyotek1.local.
+9               IN      PTR     db.ziyotek1.local.
+10              IN      PTR     web.ziyotek1.local.
+17              IN      PTR     nfs.ziyotek1.local.
+41              IN      PTR     ansible.ziyotek1.local.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

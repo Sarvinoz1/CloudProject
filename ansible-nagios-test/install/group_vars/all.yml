@@ -1,0 +1,160 @@
+
+---
+
+## Ansible user
+# change this if running Ansible as a non-root user
+# would require sudo, e.g. AWS EC2 uses ec-user
+ansible_system_user: root
+
+
+### Firewall management ###
+# Set to true to deploy firewall rules for nagios server
+manage_firewall: true
+# Set to true to deploy firewall rules for client nrpe
+manage_firewall_client: true
+
+### Nagios Variables ###
+nagios_plugin_path: /usr/lib64/nagios/plugins
+nagios_username: nagiosadmin
+nagios_password: password
+nagios_create_guest_user: true
+nagios_ro_username: amarupov
+nagios_ro_password: password
+nagios_http_port: 80
+nagios_https_port: 443
+admin_name_01: nagiosadmin
+# change this to your email address if you want notifications
+admin_email_01: nagios@ziyotek.net
+# set to false if you don't want to monitor swap
+# on your nagios server
+nagios_host_monitor_swap: true
+
+### NRPE variables ###
+nrpe_tcp_port: 5666
+# threshold for # of processes
+warning_proc: 900
+critical_proc: 1000
+# threshold for # of logged in users
+warning_users: 15
+critical_users: 30
+
+### services ports ###
+# jenkins
+jenkins_port: 8080
+# # set to true if you use a reverse proxy
+# # like nginx for jenkins
+jenkins_uses_proxy: true
+# username/pass for reverse proxy auth
+jenkins_user: jenkinsadmin
+jenkins_pass: jenkinspass
+
+# elasticsearch
+elasticsearch_port: 9200
+
+### ELK options ###
+# if you use my ELK playbook you'll need this for HTTP checks
+# https://github.com/sadsfae/ansible-elk
+kibana_user: admin
+kibana_password: admin
+### generic http options for oobserver ###
+# if your generic oobserver http checks need auth
+oobserver_use_auth: false
+oobserver_user: admin
+oobserver_pass: admin
+# follow 301 / redirects with check_http by default
+# otherwise set this to false.
+check_http_301_ok: true
+
+### DNS Service Options
+# dns domain you want service checks to query
+dns_check_domain: prdx-nsmaster11.ziyotek.local
+
+### FreeNAS Options
+# change to false if you're using http, which is a bad idea
+# if you're not in an internal, trusted network or VPN.
+freenas_use_ssl: false
+# FreeNAS checks require root credentials or some user created within FreeNAS
+# UI that can access the API with full privileges
+freenas_user: root
+freenas_pass: password
+
+### snmp options ###
+# these are for dell idrac only
+snmp_mib_path: /usr/share/snmp/mibs
+snmp_opts: -v2c -c public
+# these flag for strings to match failure, warn or ok
+snmp_check_thresholds: --warn '$ALL$' --crit 'critical|nonRecoverable|fail' --ok 'ok|online|on|spunup|full|ready|enabled|unknown|presence'
+# settings to check for idrac
+# power supply
+idrac_ps: true
+# system fans and speed
+idrac_fan: true
+# CMOS battery
+idrac_battery: true
+# power redundancy
+idrac_pu: true
+# system memory
+idrac_mem: true
+# physical disk/RAID
+idrac_disk: true
+# RAID vdisk or JBOD
+idrac_vdisk: true
+# temperature
+idrac_sensor: true
+# system cpu
+idrac_cpu: true
+
+### SuperMicro IPMI Options ###
+supermicro_ipmi_user: ADMIN
+supermicro_ipmi_pass: ADMIN
+supermicro_priv_level: user
+supermicro_ipmicfg_path: /etc/supermicro-ipmi-config
+# freeipmi settings
+enable_legacy_output: on
+enable_oem_data: on
+disable_unrecognized_events: on
+enable_workaround_flags: nochecksumcheck,noauthcodecheck
+# supermicro individual checks
+# you can make your own, I am only adding the
+# bare basics and grouping by component and type as
+# sensor id values differ across model :(
+# NOTE: You must change this to true in order to
+# use supermicro checks, this enables an RPM dependency
+# that doesn't seem to be in RHEL but exists in CentOS
+# I have provided it for you in the docs if needed for RHEL7.
+supermicro_enable_checks: false
+# SuperMicro 6018r
+smc6018r_check_cpu: true
+smc6018r_check_mem: true
+smc6018r_check_temp: true
+## SuperMicro 6048r
+smc6048r_check_cpu: true
+smc6048r_check_mem: true
+smc6048r_check_disk: true
+smc6048r_check_temp: true
+## SuperMicro 1028r
+smc1028r_check_cpu: true
+smc1028r_check_mem: true
+smc1028r_check_disk: true
+smc1028r_check_temp: true
+# please see full mapping of sensor id below, you will
+# specify the sensors you want to monitor in a csv format:
+# https://github.com/thomas-krenn/check_ipmi_sensor_v3
+# sensor values are different across Supermicro models
+# to obtain them all run:
+# check_ipmi_sensor -H mgmt.ip.address -f /etc/supermicro-ipmi-config/ipmi.cfg -vvv --nosel
+## Sensor Id groupings per model
+# 1028r
+smc1028r_check_cpu_opts: 4,71,2483,2550
+smc1028r_check_mem_opts: 2617,2684,2751,2818
+smc1028r_check_disk_opts: 4024
+smc1028r_check_temp_opts: 205,272
+# 6048r
+smc6048r_check_cpu_opts: 4,71,2684,2751
+smc6048r_check_mem_opts: 1076,1210,1344,1478,1612,1746
+smc6048r_check_disk_opts: 4225
+smc6048r_check_temp_opts: 205,272
+# 6018r have no way to check internal flash disk via ipmi
+smc6018r_check_cpu_opts: 4,71,339,406
+smc6018r_check_mem_opts: 473,540,607,674,741,808
+smc6018r_check_temp_opts: 205,272

@@ -1,0 +1,161 @@
+---
+- name: Configuring apache web
+  hosts: 192.168.33.83
+  become: yes
+  tasks:
+    - name: Install inital packages
+      yum: 
+        name: ['man' , 'man-pages' , 'mlocate' , 'vim' , 'bind-utils' , 'net-tools']
+        state: latest
+
+    - name: install latest version of apache 
+      yum: 
+        name:
+          - httpd
+          - firewalld
+        state: latest
+
+    - name: Enable & run firewalld 
+      service:
+        name: firewalld
+        enabled: true
+        state: started
+
+    - name: Add port 80 & 443 
+      firewalld:
+        service: "{{ item }}"
+        zone: public
+        permanent: yes
+        state: enabled
+        immediate: true
+      loop:
+        - http
+        - https
+
+    - name: Add port udp & tcp port 
+      firewalld:
+        port: "{{ item }}" 
+        permanent: yes
+        state: enabled
+        immediate: true
+      loop:
+        - 80/tcp
+        - 80/udp
+        
+    - name: Reload Firewall
+      service: 
+        name: firewalld 
+        state: reloaded
+      
+    - name: Disable SELinux without Reboot
+      selinux:
+        state: disabled
+   
+    - name: Enable and run httpd
+      service:
+        name: httpd
+        enabled: true
+        state: started 
+
+    - name: stop firewall
+      service:
+        name: firewalld
+        state: stopped
+      
+    - name: Add Listen Port to httpd config file
+      become_user: root
+      become: yes
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        insertafter: '#Listen 12.34.56.78:80'
+        line: "Listen 8080"
+        state: present  
+
+
+    - name: Add Servername to httpd config file
+      become_user: root
+      become: yes
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        insertafter: '#ServerName www.example.com:80'
+        line: "ServerName 192.168.33.83"
+        state: present  
+
+    - name: Create Apache document root file
+      file:
+        path: "/var/www/html/index.html"
+        state: touch
+        owner: root
+        group: root
+        mode: 0755
+   
+    
+    - name: Create java file
+      file:
+        path: "/var/www/html/app.js"
+        state: touch
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Create css file
+      file:
+        path: "/var/www/html/style.css"
+        state: touch
+        owner: root
+        group: root
+        mode: 0755
+
+
+    - name: Adding content to webserver
+      template:
+        src: /ansible/webproject/backup.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0777
+        
+
+    - name: Adding content to webserver
+      template:
+        src: /ansible/webproject/style.css
+        dest: /var/www/html/stle.css
+        owner: root
+        group: root
+        mode: 0777
+       
+
+    - name: Adding content to webserver
+      template:
+        src: /ansible/webproject/app.js
+        dest: /var/www/html/app.js
+        owner: root
+        group: root
+        mode: 0777
+        
+
+    - name: Set up Apache VirtualHost
+      become_user: root
+      become: yes
+      template:
+        src: "httpd.conf"
+        dest: "/etc/httpd/conf.d/http_conf"
+        
+      
+
+    - name: Update hosts
+      lineinfile:
+        path: /etc/hosts
+        state: present
+        line: "{{ item }}"
+      with_items:
+      - '192.168.33.86 devx-load001.ziyotek1.local load001'
+    
+    - name: Restart apache
+      service: 
+        name: httpd
+        state: restarted
+
+
+      
+        
