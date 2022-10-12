@@ -1,0 +1,37 @@
+---
+- name: Adding IPs and hostnames to the /etc/hosts file.
+  become: yes
+  hosts: localhost
+  tasks:
+    - name: Add Swarm Master
+      # Manage lines in text files
+      lineinfile:
+        # Whether the line should be there or not.
+        state: present
+        # The path of the file to modify.
+        path: /etc/hosts
+        # Will check the string in every line of the file.
+        regexp: '^192.168.33.151'
+        # The line to insert/replace into the file.
+        line: '192.168.33.151 prdx-dmaster11' 
+        # EOF for inserting the line at the end of the file.
+        insertafter: EOF 
+        # BOF for inserting the line at the beginning of the file.
+        #insertbefore: BOF
+    - name: Add Swarm Worker1
+      
+      lineinfile:
+        state: present
+        path: /etc/hosts
+        regexp: '^192.168.33.152'
+        line: '192.168.33.152 prdx-dworker11'
+        insertafter: EOF 
+        #insertbefore: BOF
+
+    - name: Add Swarm Worker2
+      lineinfile:
+        state: present
+        path: /etc/hosts
+        regexp: '^192.168.33.153'
+        line: '192.168.33.153 prdx-dworker21'
+        insertafter: EOF    

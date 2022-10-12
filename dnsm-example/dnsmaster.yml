@@ -1,0 +1,58 @@
+---
+- name: Setup dns master
+  hosts: dns
+  become: yes
+  roles:
+    - disable-se-fw
+    - install-packages
+
+- name: Setup localhost
+  hosts: localhost
+  become: yes
+  roles:
+    - disable-se-fw
+    - install-packages
+
+- name: Setup dns master
+  hosts: dnsmaster11
+  tasks:
+  - name: Configure dns master
+    template:
+      src: dnsm.j2
+      dest: /etc/named.conf
+      owner: root
+      group: named
+
+  - name: create ziyotek1.flz 
+    file: 
+      path: /var/named/ziyotek1.flz
+      state: touch
+      owner: root
+      group: named
+
+  - name: copying .flz file
+    template:
+      src:  flz.j2
+      dest: /var/named/ziyotek1.flz
+      owner: root
+      group: named
+      
+  - name: create ziyotek1.rlz 
+    file: 
+      path: /var/named/ziyotek1.rlz
+      state: touch
+      owner: root
+      group: named 
+
+  - name: copying .rlz file
+    template:
+      src: rlz.j2
+      dest: /var/named/ziyotek1.rlz
+      owner: root
+      group: named
+      
+  - name: Start named
+    service:
+      name: named
+      enabled: yes
+      state: restarted

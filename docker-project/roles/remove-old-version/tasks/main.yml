@@ -1,0 +1,17 @@
+---
+  - name: Remove older version of docker
+    # hosts: all
+    become: yes
+    yum:
+      name:
+        - docker
+        - docker-client
+        - docker-client-latest
+        - docker-common
+        - docker-latest
+        - docker-latest-logrotate
+        - docker-logrotate
+        - docker-engine
+        - docker-engine-selinux
+        - docker-selinux
+      state: absent

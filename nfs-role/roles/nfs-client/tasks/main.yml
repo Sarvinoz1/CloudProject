@@ -1,0 +1,17 @@
+---
+  - name: install nfs-utils
+    become: true
+    yum: 
+      name: nfs-utils 
+      state: latest
+
+  - name: Create a mountable directory if it does not exist
+    file:
+      path: /clientshare
+      state: directory
+      owner: ansible
+      group: ansible
+      mode: '0775'
+
+  - name: Mount volumn
+    shell: sudo mount -t nfs 192.168.33.150:/var/nfs/shared /clientshare
