@@ -1,8 +1,11 @@
 ---
   - name: Install Commom Packages
+    become: true
     yum: 
-      name: 
+      name:
+        - bind
         - bind-utils
+        - epel-release 
         - man
         - man-pages
         - mlocate

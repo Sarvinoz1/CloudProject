@@ -1,14 +1,19 @@
 $TTL 1D
-@       IN SOA  prdx-nsmaster112.ziyotek1.local. root.prdx-nsmaster112.ziyotek1.local. (
-                                        0        ; serial
+@       IN SOA  prdx-nsmaster11.ziyotek1.local. root.prdx-nsmaster11.ziyotek1.local. (
+                                        1        ; serial
                                         1D      ; refresh
                                         1H      ; retry
                                         1W      ; expire
                                         3H )    ; minimum
 
 ; name servers NS records
-@                 IN      NS      prdx-nsmaster112.ziyotek1.local.
-@               IN      PTR     ziyotek1.local.
+@               IN      NS      prdx-nsmaster11.ziyotek1.local.
+@               IN      NS      prdx-nsworker11.ziyotek1.local.
+@               IN      NS      prdx-nsworker21.ziyotek1.local.
+
+@               IN      A       192.168.33.12
+@               IN      A       192.168.33.13
+@               IN      A       192.168.33.14
 
 ; name servers PTR records
 10              IN      PTR     prdx-ntp11.ziyotek1.local.
@@ -34,7 +39,7 @@ $TTL 1D
 31              IN      PTR     prdx-ansible301.ziyotek1.local.
 32              IN      PTR     prdx-dworker21.ziyotek1.local.
 36              IN      PTR     prdx-haproxy117.ziyotek1.local.
-125             IN      PTR     prdx-nsmaster112.ziyotek1.local.
+
 
 ; name servers A records
 prdx-ntp11              IN      A       192.168.33.10
@@ -60,9 +65,6 @@ prdx-ansible11          IN      A       192.168.33.24
 prdx-dmaster11          IN      A       192.168.33.29
 prdx-dworker11          IN      A       192.168.33.30
 prdx-dworker21          IN      A       192.168.33.31
-prdx-nsmaster112        IN      A       192.168.33.125
-
-
 
 
 

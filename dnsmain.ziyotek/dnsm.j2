@@ -19,7 +19,9 @@ options {
         recursing-file  "/var/named/data/named.recursing";
         secroots-file   "/var/named/data/named.secroots";
         allow-query     { localhost; any; };
-
+        allow-transfer { localhost; 192.168.33.130; 192.168.33.131; };
+        also-notify { 192.168.33.130; 192.168.33.131; };
+        
 
         /*
          - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
@@ -62,14 +64,14 @@ zone "." IN {
 zone "ziyotek1.local" IN {
 type master;
 file "ziyotek1.flz";
-allow-update { none; };
+allow-transfer { 192.168.33.130; 192.168.33.131; };
 };
 
 # Reverse Lookup Zone
 zone "33.168.192.in-addr.arpa" IN {
 type master;
 file "ziyotek1.rlz";
-allow-update { none; };
+allow-transfer { 192.168.33.130; 192.168.33.131; };
 };
 
 

@@ -3,7 +3,7 @@
     selinux:
       state: disabled
 
-  - name: Disable the firewalld service.
+  - name: Disable the Firewalld service.
     service:
       name: firewalld
       state: stopped
