@@ -1,0 +1,31 @@
+# ICMP and ssh checks of switches
+define hostgroup {
+	hostgroup_name switches
+        alias Network Switches
+}
+
+{% for host in groups['switches'] %}
+define host {
+	use                     generic-switch
+	host_name               {{ host }}
+	alias                   {{ host }}
+	address                 {{ hostvars[host].ansible_host }}
+	hostgroups 		        switches
+}
+{% endfor %}
+
+# service checks to be applied to oob interfaces
+define service {
+	use				            generic-service
+	hostgroup_name			    switches
+	service_description	        SSH
+	check_command			    check_ssh
+	notifications_enabled		1
+}
+define service {
+	use				            generic-service
+	hostgroup_name			    switches
+	service_description	        PING
+	check_command			    check_ping!200.0,20%!600.0,60%
+	notifications_enabled		1
+}

@@ -1,0 +1,248 @@
+---
+# Playbook to install nagios server and generate hosts/checks
+# This also installs NRPE on clients for more in-depth checks based on
+# Ansible inventory
+# author: Will Foster (@sadsfae)
+# https://hobo.house/2016/06/24/automate-nagios-deployment-with-ansible/
+
+- name: Check Operating System
+  fail:
+    msg="You're not running a supported operating system (CentOS or RHEL 7+)"
+  when: ((ansible_os_family != "RedHat") or (ansible_distribution_major_version|int < 7))
+
+- name: Import EPEL GPG Key
+  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    state=present
+  become: true
+
+- name: Check for EPEL repo
+  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state=present
+  become: true
+
+- name: Install HTTPD and OpenSSL
+  yum:
+    name: ['httpd', 'httpd-tools', 'mod_ssl', 'openssl', 'net-snmp-utils', 'freeipmi', 'OpenIPMI-modalias']
+    state: present
+  become: true
+
+- name: Install SuperMicro Perl Dependencies
+  yum:
+    name: ['perl-IPC-Run', 'perl-IO-Tty']
+    state: present
+  become: true
+  when: supermicro_enable_checks|bool
+
+- name: Setup nagios SSL HTTPD vhost
+  copy: src=nagios.conf dest=/etc/httpd/conf.d/
+  become: true
+
+- name: Install nagios packages and common plugins
+  yum:
+    name: ['nagios', 'nagios-common', 'nagios-plugins-ssh', 'nagios-plugins-tcp', 'nagios-plugins-http',
+           'nagios-plugins-load', 'nagios-plugins-nrpe', 'nagios-plugins-uptime', 'nagios-plugins-swap',
+           'nagios-plugins-ping', 'nagios-plugins-procs', 'nagios-plugins-users', 'nagios-plugins-disk',
+           'nagios-plugins-dns', 'libsemanage-python', python-requests]
+    state: present
+  become: true
+
+- name: Check nagios Users
+  stat: path=/etc/nagios/passwd
+  ignore_errors: true
+  register: nagios_user_pwfile_exists
+  become: true
+
+- name: Create empty password file
+  command: touch /etc/nagios/passwd
+  args:
+    creates: /etc/nagios/passwd
+  when: nagios_user_pwfile_exists != 0
+  become: true
+
+- name: Create nagios admin user
+  command: htpasswd -b -c /etc/nagios/passwd {{nagios_username}} {{nagios_password}}
+  ignore_errors: true
+  when: nagios_user_pwfile_exists != 0
+  become: true
+
+- name: Create nagios guest user
+  command: htpasswd -b /etc/nagios/passwd {{nagios_ro_username}} {{nagios_ro_password}}
+  when: nagios_create_guest_user|bool
+  become: true
+
+- name: Configure nagios main configuration
+  copy: src=nagios.cfg dest=/etc/nagios/nagios.cfg
+  become: true
+
+- name: Copy idrac check plugin
+  copy: src=idrac_2.2rc4 dest=/usr/lib64/nagios/plugins/idrac_2.2rc4 mode="a+x"
+  become: true
+
+- name: Configure Dell idrac snmp mib file
+  copy: src=idrac-smiv2.mib  dest={{snmp_mib_path}}/ mode=0755
+  become: true
+
+- name: Create nagios socket tmp files
+  file:
+    path={{supermicro_ipmicfg_path}}
+    state=directory
+    owner=nagios
+    group=nagios
+    mode=0777
+    seuser=system_u
+  become: true
+
+- name: Configure SuperMicro IPMI Check
+  copy: src=check_ipmi_sensor dest={{nagios_plugin_path}}/ mode=0755
+  become: true
+
+- name: Generate the SuperMicro monitoring template
+  template: src={{ item + ".j2" }}
+            dest={{supermicro_ipmicfg_path}}/{{ item }}
+  with_items:
+    - ipmi.cfg
+  become: true
+
+- name: Generate the nagios conf.d directory
+  file:
+    path: /etc/nagios/conf.d
+    state: directory
+
+- name: Generate the nagios monitoring templates
+  template: src={{ item + ".j2" }}
+            dest=/etc/nagios/conf.d/{{ item }}
+            force=yes
+  with_items:
+    - oobservers.cfg
+    - switches.cfg
+    - webservers.cfg
+    - servers.cfg
+    - servers_with_mdadm_raid.cfg
+    - commands.cfg
+    - elkservers.cfg
+    - elasticsearch.cfg
+    - idrac.cfg
+    - supermicro_6018r.cfg
+    - supermicro_6048r.cfg
+    - supermicro_1028r.cfg
+    - jenkins.cfg
+    - dns.cfg
+    - dns_with_mdadm_raid.cfg
+    - freenas.cfg
+    - devices.cfg
+    - dns_only.cfg
+  register: nagios_needs_restart
+  become: true
+
+- name: Generate the nagios contact template and localhost config
+  template: src={{ item + ".j2" }}
+            dest=/etc/nagios/objects/{{ item }}
+            force=yes
+  with_items:
+    - contacts.cfg
+    - localhost.cfg
+  become: true
+
+- name: Generate additional commands.cfg from template
+  template: src=objects_commands.cfg.j2
+            dest=/etc/nagios/objects/commands.cfg
+            force=yes
+  become: true
+
+- name: Generate templated FreeNAS Python status script based on SSL settings
+  template: src={{ item + ".j2" }}
+            dest=/usr/lib64/nagios/plugins/check_freenas.py
+            force=yes
+  with_items:
+    - check_freenas.py
+  become: true
+
+- name: Make FreeNAS Python status script executable
+  file:
+    dest: /usr/lib64/nagios/plugins/check_freenas.py
+    mode: a+x
+
+- name: Generate the nagios user CGI template
+  template: src={{ item + ".j2" }}
+            dest=/etc/nagios/{{ item }}
+  with_items:
+    - cgi.cfg
+    - services.cfg
+  become: true
+
+# SELinux boolean for nagios
+- name: Apply SELinux boolean nagios_run_sudo
+  seboolean: name=nagios_run_sudo state=yes persistent=yes
+  ignore_errors: true
+  become: true
+
+# SELinux boolean for nagios
+- name: Apply SELinux boolean logging_syslogd_run_nagios_plugins
+  seboolean: name=logging_syslogd_run_nagios_plugins state=yes persistent=yes
+  ignore_errors: true
+  become: true
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1291718
+- name: Create nagios socket tmp files
+  file:
+    path=/var/log/nagios/rw
+    state=directory
+    owner=nagios
+    group=nagios
+    mode=0777
+    seuser=system_u
+  become: true
+
+# nagios upgrade to 4.2.4 requires this
+# todo: file bug
+- name: Create nagios results directory
+  file:
+    path=/var/log/nagios/spool/checkresults
+    state=directory
+    owner=nagios
+    group=nagios
+    mode=0755
+    seuser=system_u
+  become: true
+
+# employ lineinfile fix for faulty, shipped nagios systemd service
+- name: Check/fix systemd service file
+  lineinfile: dest=/usr/lib/systemd/system/nagios.service \
+          regexp="^ExecStopPost=" \
+          line="ExecStopPost=/usr/bin/rm -f /var/spool/nagios/cmd/nagios.cmd /var/log/nagios/rw/nagios.qh"
+  register: systemd_nagios_changed
+  become: true
+
+# change listening port for http to match group_vars/all.yml
+- name: Set HTTP Listen Port
+  lineinfile: dest=/etc/httpd/conf/httpd.conf \
+          regexp="^Listen" \
+          line="Listen {{nagios_http_port}}"
+  become: true
+
+- name: Reload Systemd if needed
+  command: systemctl daemon-reload
+  when: systemd_nagios_changed !=0
+  become: true
+
+- name: Start nagios service
+  command: systemctl restart nagios.service
+  when: nagios_needs_restart != 0
+  become: true
+
+- name: Set nagios to start on boot
+  command: systemctl enable nagios.service
+  ignore_errors: true
+  become: true
+
+- name: Setup HTTPD service
+  command: systemctl enable httpd.service
+  ignore_errors: true
+  when: nagios_needs_restart !=0
+  become: true
+
+- name: Restart HTTPD service
+  command: systemctl restart httpd.service
+  ignore_errors: true
+  when: nagios_needs_restart !=0
+  become: true

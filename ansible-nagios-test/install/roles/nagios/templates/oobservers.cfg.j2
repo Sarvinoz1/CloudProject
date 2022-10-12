@@ -1,0 +1,60 @@
+# generic out-of-band interfaces
+# this will also work for most PDUs
+# checks ssh, ping and http
+
+define hostgroup {
+	hostgroup_name oobservers
+        alias OOB Interfaces
+}
+
+{% for host in groups['oobservers'] %}
+define host {
+	use                     linux-server
+	host_name               {{ host }}
+	alias                   {{ host }}
+	address                 {{ hostvars[host].ansible_host }}
+	hostgroups 		        oobservers
+}
+{% endfor %}
+
+# service checks to be applied to oob interfaces
+# if oobserver_use_auth is true we will specify a password auth
+
+{% if oobserver_use_auth == true %}
+
+define service {
+    use                         local-service
+    hostgroup_name              oobservers
+    service_description         Web Interface
+    check_command               check_oobauth_http
+    notifications_enabled       1
+}
+
+{% endif %}
+
+{% if oobserver_use_auth == false %}
+
+define service {
+    use                         local-service
+    hostgroup_name              oobservers
+    service_description         Web Interface
+    check_command               check_http
+    notifications_enabled       1
+}
+
+{% endif %}
+
+define service {
+	use				            local-service
+	hostgroup_name			    oobservers
+	service_description	        SSH
+	check_command			    check_ssh
+	notifications_enabled		1
+}
+define service {
+	use				            generic-service
+	hostgroup_name			    oobservers
+	service_description	        PING
+	check_command			    check_ping!200.0,20%!600.0,60%
+	notifications_enabled		1
+}
