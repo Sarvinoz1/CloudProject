@@ -1,0 +1,152 @@
+---
+- name: Setting up the HAPROXY for http web servers
+  hosts: lb
+  become: yes
+  tasks: 
+    - name: Install LB
+      yum:
+        name: haproxy
+        state: present
+
+ 
+    - name: Update hosts
+      lineinfile:
+        path: /etc/hosts
+        state: present
+        line: "{{ item }}"
+      with_items:
+      - '192.168.33.83 devx-web001.ziyotek1.local web001'
+      - '192.168.33.84 devx-web002.ziyotek1.local web001'
+      - '192.168.33.85 devx-web003.ziyotek1.local web001'
+      
+    - name: Copy HAProxy configuration in place.
+      template:
+          src: "templates/haproxy.cfg.j2"
+          dest: "/etc/haproxy/haproxy.cfg"
+
+    # - name: Replace Hashtag
+    #   replace:
+    #     path: /etc/rsyslog.conf
+    #     regexp: '(\s+)#$ModLoad imdup(\s+.*)?$'
+    #     replace: '\1$ModLoad imdup\2'
+    #     backup: yes
+
+    - name: Add lines to enable the UDP Connection in rsyslog config file for Haproxy
+      become_user: root
+      become: yes
+      lineinfile:
+        path: /etc/rsyslog.conf
+        line: "$ModLoad imudp"
+        insertafter: '# Provides UDP syslog reception'
+        state: present  
+
+    - name: Enable the UDP Connection in rsyslog config file for Haproxy
+      become_user: root
+      become: yes
+      lineinfile:
+        path: /etc/rsyslog.conf
+        line: "$UDPServerRun 514"
+        insertbefore: '# Provides TCP syslog reception'
+        state: present
+
+
+    - name: Creating a new haproxy conf file for rsyslog with content
+      copy:
+        dest: /etc/rsyslog.d/haproxy.conf
+        content:  |
+          local2.=info     /var/log/haproxy-access.log    #For Access Log
+          local2.notice    /var/log/haproxy-info.log      #For Service Info - Backend, loadbalancer
+            
+    # - name: Add port udp & tcp port 
+    #   firewalld:
+    #     port: "{{ item }}" 
+    #     permanent: yes
+    #     state: enabled
+    #     immediate: true
+    #   loop:
+    #     - 80/tcp
+    #     - 80/udp
+    #     - 8080/udp
+    #     - 8080/tcp
+
+    - name: Reload Firewall
+      service: 
+        name: firewalld 
+        state: reloaded
+
+    - name: Disable SELinux without Reboot
+      selinux:
+        state: disabled
+   
+    - name: Restart Rsyslog
+      service:
+        name: rsyslog
+        state: restarted
+    
+    - name: Enable & start HAPROXY service
+      service:
+        name: haproxy
+        enabled: true
+        state: started
+
+    
+            
+
+        
+      
+
+    
+
+  
+   
+      
+
+  
+
+
+
+
+
+
+
+
+
+
+ 
+        
+
+        
+               
+    
+      
+
+
+
+
+
+
+
+
+
+        
+
+
+       
+    
+    
+
+        
+    
+
+    # - name: Update /etc/hosts file on lb server
+    #   template:
+    #     src: hosts.j2
+    #     dest: /etc/hosts
+    #   when: ansible_facts.default_ipv4.address == '"web" in group_names'
+    
+    
+
+
+      
+    
+       
