@@ -1,0 +1,56 @@
+---
+- name: Configure chrony
+  hosts: NTP 
+  become: true
+  tasks:
+   
+  - name: Uncomment public servers /etc/chrony.conf
+    replace:
+      path: /etc/chrony.conf
+      regexp: '^{{item.To}}'
+      replace: '{{item.From}}'
+    with_items:
+     - { From: 'server 0.centos.pool.ntp.org iburst', To: '#server 0.centos.pool.ntp.org iburst'}
+     - { From: 'server 1.centos.pool.ntp.org iburst', To: '#server 1.centos.pool.ntp.org iburst'}
+     - { From: 'server 2.centos.pool.ntp.org iburst', To: '#server 2.centos.pool.ntp.org iburst'}
+     - { From: 'server 3.centos.pool.ntp.org iburst', To: '#server 3.centos.pool.ntp.org iburst'}
+
+  - name: Removing lines from /etc/chrony.conf
+    tags: run_this
+    lineinfile:
+      dest: /etc/chrony.conf
+      line: '{{ item.new_line }}'
+      insertafter: '{{ item.main_line }}'
+      state: absent
+    with_items:
+    - {main_line: '# Serve time even if not synchronized to a time source.', new_line: 'local stratum 10'}
+    - {main_line: '# Allow NTP client access from local network', new_line: 'allow 192.168.33.1'}
+
+  - name: Systemctl disable chronyd
+    tags: run_this
+    systemd:
+      name: chronyd
+      enabled: no
+      
+
+  - name: Systemctl stop chronyd
+    systemd: 
+      state: stopped
+      name: chronyd
+
+  - name: Uninstall chronyd Server
+    yum:
+      name: chrony
+      # state: absent
+
+  - name: Disable SElinux
+    tags: run_this
+    replace:
+      path: /etc/selinux/config
+      regexp: 'SELINUX=disabled'
+      replace: 'SELINUX=enforcing'
+
+  
+
+
+      
