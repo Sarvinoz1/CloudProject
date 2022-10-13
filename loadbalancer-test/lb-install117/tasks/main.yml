@@ -1,0 +1,43 @@
+---
+  - name: Install LB
+    package:
+      name: haproxy
+      state: present
+ 
+  - name: Copy HAProxy configuration in place.
+    template:
+      src: haproxy117.cfg.j2
+      dest: "/etc/haproxy/haproxy.cfg"
+
+  - name: Add lines to enable the UDP Connection in rsyslog config file for Haproxy
+    lineinfile:
+      path: /etc/rsyslog.conf
+      line: "$ModLoad imudp"
+      insertafter: '# Provides UDP syslog reception'
+      state: present  
+
+  - name: Enable the UDP Connection in rsyslog config file for Haproxy
+    lineinfile:
+      path: /etc/rsyslog.conf
+      line: "$UDPServerRun 514"
+      insertbefore: '$ModLoad imudp'
+      state: present
+
+  - name: Creating a new haproxy conf file for rsyslog with content
+    copy:
+      dest: /etc/rsyslog.d/haproxy.conf
+      content:  |
+        local2.=info     /var/log/haproxy-access.log    #For Access Log
+        local2.notice    /var/log/haproxy-info.log      #For Service Info - Backend, loadbalancer
+          
+  - name: Restart Rsyslog
+    service:
+      name: rsyslog
+      state: restarted
+  
+  - name: Enable & start HAPROXY service
+    service:
+      name: haproxy
+      enabled: true
+      state: started
+

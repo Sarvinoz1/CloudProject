@@ -1,0 +1,75 @@
+---
+  - name: install latest version of apache 
+    yum: 
+      name:
+        - httpd
+      state: latest
+
+  - name: Create Apache document root file
+    file:
+      path: "/var/www/html/index.html"
+      state: touch
+      owner: root
+      group: root
+      mode: 0755
+
+
+  - name: Create java file
+    file:
+      path: "/var/www/html/app.js"
+      state: touch
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Create css file
+    file:
+      path: "/var/www/html/style.css"
+      state: touch
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Adding content to webserver
+    template:
+      src: index117.html.j2
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0777
+      
+  - name: Adding content to webserver
+    template:
+      src: style.css.j2
+      dest: /var/www/html/style.css
+      owner: root
+      group: root
+      mode: 0777
+      
+  - name: Adding content to webserver
+    template:
+      src: app.js.j2
+      dest: /var/www/html/app.js
+      owner: root
+      group: root
+      mode: 0777
+      
+  - name: Set up Apache VirtualHost
+    template:
+      src: httpd.conf.j2
+      dest: "/etc/httpd/conf.d/http_conf"
+
+  # - name: Set up Apache VirtualHost
+  #   template:
+  #     src: hosts-clients.j2
+  #     dest: /etc/hosts
+
+  - name: Restart apache
+    service: 
+      name: httpd
+      enabled: yes
+      state: restarted
+
+
+      
+        

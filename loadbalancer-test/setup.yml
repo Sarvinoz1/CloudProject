@@ -1,0 +1,50 @@
+---
+  - name: setup pre-requisites
+    become: yes
+    hosts: servers
+    # remote_user: ansible
+    # become_method: sudo
+    gather_facts: false
+    roles:
+      - disable-se-fw
+      - install-packages
+
+  - name: Load Balancr OS7 setup
+    hosts: devx-load001
+    roles:
+      - lb-install116
+
+  # - name: Load Balancr OS7 setup      # Uncomment for project
+  #   hosts: load-balancer
+  #   roles:
+  #     - lb-install117
+      
+  - name: Web Servers 116 setup
+    hosts: devx-web001
+    roles:
+      - web-install116
+
+  - name: Web Servers 216 setup
+    hosts: devx-web002
+    roles:
+      - web-install216
+
+  - name: Web Servers 316 setup
+    hosts: devx-web003
+    roles:
+      - web-install316
+
+  # - name: Web Servers 117 setup
+  #   hosts: web-servers
+  #   roles:
+  #     - web-install117
+
+  # - name: Web Servers 217 setup
+  #   hosts: web-servers
+  #   roles:
+  #     - web-install217
+  
+  # - name: Web Servers 317 setup
+  #   hosts: web-servers
+  #   roles:
+  #     - web-install317
