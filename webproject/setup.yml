@@ -1,0 +1,44 @@
+- hosts: web1
+  become: yes
+  roles:
+    - web
+    
+  tasks:
+    - name: Add web001 after contact line in index.html
+      template:
+        src: /ansible/roles/web/templates/2index.html.j2
+        dest: /var/www/html/index.html
+           
+- hosts: web2
+  become: yes
+  roles:
+    - web
+
+  tasks:
+    - name: Add web001 after contact line in index.html
+      template:
+        src: /ansible/roles/web/templates/3index.html.j2
+        dest: /var/www/html/index.html
+          
+- hosts: web3
+  become: yes
+  roles:
+    - web
+
+  tasks:
+    - name: Add web001 after contact line in index.html
+      template:
+        src: /ansible/roles/web/templates/4index.html.j2
+        dest: /var/www/html/index.html
+
+- name: web-servers restart
+  hosts: web-servers
+  roles:
+    - restart
+           
+- hosts: lb
+  become: yes
+  tasks:
+    - name: Running haproxy LB role
+      include_role: 
+       name: lbrole

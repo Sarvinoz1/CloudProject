@@ -1,0 +1,101 @@
+---
+# tasks file for web
+
+ 
+- name: Install inital packages
+  yum: 
+    name: ['man' , 'man-pages' , 'mlocate' , 'vim' , 'bind-utils' , 'net-tools']
+    state: latest
+
+- name: install latest version of apache 
+  yum: 
+    name:
+      - httpd
+      - firewalld
+    state: latest
+
+# - name: Enable & run firewalld 
+#   service:
+#     name: "firewalld"
+#     enabled: true
+#     state: started
+
+# - name: Add port http/https service to firewall
+#   firewalld:
+#     service: "{{ item }}"
+#     zone: public
+#     permanent: yes
+#     state: enabled
+#     immediate: true
+#   loop:
+#     - http
+#     # - https
+
+# - name: Add port udp & tcp port 
+#   firewalld:
+#     port: "{{ item }}" 
+#     permanent: yes
+#     state: enabled
+#     immediate: true
+#   loop:
+#     - 80/tcp
+#     - 8080/tcp
+        
+# - name: Reload Firewall
+#   service: 
+#     name: firewalld 
+#     state: reloaded
+  
+- name: Disable SELinux without Reboot
+  selinux:
+    state: disabled
+
+- name: Enable and run httpd
+  service:
+    name: httpd
+    enabled: true
+    state: started 
+
+- name: stop firewall
+  service:
+    name: firewalld
+    state: stopped
+  
+
+
+- name: Create Apache document root file
+  file:
+    path: "/var/www/html/index.html"
+    state: touch
+    mode: 0644
+    
+
+- name: Create css file
+  file:
+    path: "/var/www/html/style.css"
+    state: touch
+    mode: 0644
+  
+
+- name: Adding content to webserver
+  template:
+    src: /ansible/roles/web/files/style.css
+    dest: /var/www/html/style.css
+    owner: apache
+    group: apache
+    mode: 0777
+    
+- name: Adding content to webserver
+  template:
+    src: /ansible/roles/web/templates/2index.html.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0777
+    
+
+  
+- name: Restart apache
+  service: 
+    name: httpd
+    state: restarted

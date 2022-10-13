@@ -1,0 +1,7 @@
+---
+# tasks file for restart
+
+- name: restart apache
+  service: 
+    name: httpd
+    state: restarted
