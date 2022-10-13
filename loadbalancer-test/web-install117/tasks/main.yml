@@ -59,11 +59,6 @@
       src: httpd.conf.j2
       dest: "/etc/httpd/conf.d/http_conf"
 
-  # - name: Set up Apache VirtualHost
-  #   template:
-  #     src: hosts-clients.j2
-  #     dest: /etc/hosts
-
   - name: Restart apache
     service: 
       name: httpd
