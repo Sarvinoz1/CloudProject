@@ -22,11 +22,6 @@
         - containerd.io
       state: latest
 
-  # - name: Convert old images to new runtime
-  #   shell:
-  #     cmd: " grep -rl 'docker-runc' /var/lib/docker/containers/ | xargs sed -i 's/docker-runc/runc/g' "
-  #   changed_when: false
-  #   failed_when: false
 
   - name: Start Docker service
     service:
