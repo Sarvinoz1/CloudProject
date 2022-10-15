@@ -104,18 +104,14 @@
     - replace:
         path: /etc/resolv.conf
         regexp: '8.8.8.8'
-        replace: '192.168.33.12'
+        replace: '192.168.33.13'
         backup: yes
     - lineinfile:
         path: /etc/resolv.conf 
-        line: "nameserver 192.168.33.13"
+        line: "nameserver 192.168.33.12"
         state: present
         backup: yes  
-    - lineinfile:
-        path: /etc/resolv.conf 
-        line: "nameserver 192.168.33.14"
-        state: present
-        backup: yes    
+      
 - name: Adding DNS server ip to configuration file  dns-slave2
   hosts: dns-slave2
   become: true 
@@ -124,15 +120,11 @@
     - replace:
         path: /etc/resolv.conf
         regexp: '8.8.8.8'
-        replace: '192.168.33.12'
+        replace: '192.168.33.14'
         backup: yes
     - lineinfile:
         path: /etc/resolv.conf 
-        line: "nameserver 192.168.33.13"
+        line: "nameserver 192.168.33.12"
         state: present
         backup: yes  
-    - lineinfile:
-        path: /etc/resolv.conf 
-        line: "nameserver 192.168.33.14"
-        state: present
-        backup: yes          
+             
