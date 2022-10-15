@@ -96,17 +96,7 @@
       enabled: yes
       state: restarted      
 
-- name: Adding DNS server ip to configuration file 
-  hosts: dns-slave2
-  become: true 
-  become_method: sudo 
-  tasks:
-    - replace:
-        path: /etc/resolv.conf
-        regexp: '8.8.8.8'
-        replace: '192.168.33.14'
-        backup: yes 
-- name: Adding DNS server ip to configuration file 
+- name: Adding DNS server ip to configuration file dns-slve1 
   hosts: dns-slave1
   become: true 
   become_method: sudo 
@@ -115,4 +105,26 @@
         path: /etc/resolv.conf
         regexp: '8.8.8.8'
         replace: '192.168.33.13'
-        backup: yes 
+        backup: yes
+    - lineinfile:
+        path: /etc/resolv.conf 
+        line: "nameserver 192.168.33.12"
+        state: present
+        backup: yes  
+      
+- name: Adding DNS server ip to configuration file  dns-slave2
+  hosts: dns-slave2
+  become: true 
+  become_method: sudo 
+  tasks:
+    - replace:
+        path: /etc/resolv.conf
+        regexp: '8.8.8.8'
+        replace: '192.168.33.14'
+        backup: yes
+    - lineinfile:
+        path: /etc/resolv.conf 
+        line: "nameserver 192.168.33.12"
+        state: present
+        backup: yes  
+             
