@@ -8,8 +8,8 @@
     insertafter: 'server 3.centos.pool.ntp.org iburst'
     state: present
   with_items:
-  - 'server 192.168.33.102 iburst'
-  - 'server 192.168.33.101 iburst'
+  - 'server 192.168.33.10 iburst'
+  - 'server 192.168.33.11 iburst'
   - '# NTP SERVER IP'
 
 - name: Commenting public servers /etc/chrony.conf

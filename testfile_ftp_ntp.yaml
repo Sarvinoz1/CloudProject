@@ -1,27 +1,28 @@
 ---
 - name: Configure chrony Server
-  hosts: NTP
+  hosts: NTPSERVER
   become: true
   roles:
     - ntpservers
 
 - name: Configure FTP server
-  hosts: FTP
+  hosts: FTPSERVER
   become: true
   roles:
     - ftpserver
 
 - name: Configure FTP client
-  hosts: worker1-NTP
+  hosts: NTPSERVER
   become: true
   roles:
     - ftpclient
 
 - name: Configure NTP client
-  hosts: FTP
+  hosts: NTPCLIENT
   become: true
   roles:
     - ntpclient
+
 
 
  
