@@ -1,6 +1,6 @@
 ---
 - name: Adding DNS server ip to configuration file 
-  hosts: dns-clients
+  hosts: dns-clients localhost
   become: true 
   become_method: sudo 
   tasks:
