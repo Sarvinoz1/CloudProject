@@ -86,7 +86,7 @@
   tasks:
   - name: Configure dns slave1
     template:
-      src: dnss1.j2
+      src: dnss2.j2
       dest: /etc/named.conf
       owner: root
       group: named
