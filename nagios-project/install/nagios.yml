@@ -3,19 +3,26 @@
 # generate service checks based on Ansible inventory
 
 - hosts: all
+  become: yes
   remote_user: "{{ ansible_system_user }}"
+  become_method: sudo
   tasks: []
 
 # role for nagios clients via NRPE
 - hosts: all
+  become: yes
   remote_user: "{{ ansible_system_user }}"
+  become_method: sudo
   roles:
     - nagios_client
     - disable-se-fw
+    - install-packages
 
 # role for nagios server
 - hosts: nagios
+  become: yes
   remote_user: "{{ ansible_system_user }}"
+  become_method: sudo
   roles:
     - disable-se-fw
     - nagios

@@ -1,0 +1,29 @@
+---
+  - name : NFS Server Configuration
+    hosts: servers
+    become: true
+    remote_user: ansible
+    become_method: sudo
+    gather_facts: false
+    roles:
+      - install-packages
+      - disable-se-fw
+
+  - name: LDAP master Setup
+    hosts: autofs-servers
+    tasks:
+      - name: Add Shared directory path in the exports file.
+        lineinfile:
+          path: /etc/exports
+          regexp: '^/home'
+          line: '/home *'
+
+      - name: Reexport all directories with /etc/exports
+        shell: exportfs -r
+        ignore_errors: true
+
+  - name: LDAP Clients Setup
+    hosts: autofs-clients
+    roles: 
+      - autofs
+

@@ -18,19 +18,22 @@
     roles:
       - remove-old-version
 
-  - name: install docker
+  - name: Install docker
     hosts: docker-nodes
     roles:
       - docker-installation
 
-  - name: initialize docker swarm
+  - name: START Docker Swarm
     hosts: swarm-managers
     roles:
       - docker-swarm-init
 
-  - name: add workers to the swarm
+  - name: Add workers to the swarm
     hosts: swarm-workers
     roles:
       - docker-swarm-join
 
-
+  - name: initialize docker swarm
+    hosts: swarm-managers
+    roles:
+      - docker-service-create

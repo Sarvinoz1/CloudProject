@@ -1,0 +1,38 @@
+---
+  - name: Install autofs
+    yum: 
+      name: 
+        - autofs
+        - nfs-utils
+      state: latest
+
+  - name: Start Service
+    service:
+      name: autofs
+      state: started
+      enabled: yes
+
+  - name: Create a mountable directory if it does not exist
+    file:
+      path: /home # Directory that you want to share
+      state: directory
+      owner: ansible
+      group: ansible
+      mode: '0775'
+
+  - name: Master Map file
+    lineinfile:
+      path: /etc/auto.master.d/ldap.autofs
+      line: /home /etc/auto.ldap
+      create: yes
+
+  - name: Indirect wildcard Maps
+    lineinfile:
+      path: /etc/auto.ldap
+      line: '* -rw,sync 192.168.33.23:/home/&'
+      create: yes
+
+  # - name: Restart Service
+  #   service:
+  #     name: autofs
+  #     state: restarted

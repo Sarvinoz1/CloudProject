@@ -35,9 +35,9 @@
       name: rsyslog
       state: restarted
   
-  - name: Enable & start HAPROXY service
-    service:
-      name: haproxy
-      enabled: true
-      state: started
+  # - name: Enable & start HAPROXY service
+  #   service:
+  #     name: haproxy
+  #     enabled: true
+  #     state: restarted
 

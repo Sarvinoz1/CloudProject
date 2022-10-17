@@ -1,6 +1,7 @@
 ---
-- name: Setup dns master
-  hosts: dns-master
+- name: Setup dns master and localhost 
+  tags: installpg
+  hosts: all
   become: yes
   roles:
     - disable-se-fw
@@ -82,11 +83,12 @@
 
 - name: Setup dns-slave2
   hosts: dns-slave2
+  tags: slave2
   become: yes  
   tasks:
-  - name: Configure dns slave1
+  - name: Configure dns slave2
     template:
-      src: dnss1.j2
+      src: dnss2.j2
       dest: /etc/named.conf
       owner: root
       group: named
@@ -96,7 +98,18 @@
       enabled: yes
       state: restarted      
 
-- name: Adding DNS server ip to configuration file dns-slve1 
+- name: Adding DNS server ip to configuration file dns-master
+  tags: dnsmasterconf
+  hosts: dns-master
+  become: true 
+  become_method: sudo 
+  tasks:
+    - lineinfile:
+          path: /etc/resolv.conf 
+          line: "nameserver 192.168.33.12"
+          state: present
+          backup: yes 
+- name: Adding DNS server ip to configuration file  dns-slave2
   hosts: dns-slave1
   become: true 
   become_method: sudo 

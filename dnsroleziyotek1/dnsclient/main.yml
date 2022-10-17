@@ -19,3 +19,15 @@
         line: "nameserver 192.168.33.14"
         state: present
         backup: yes  
+- name: configuration file 
+  tags: conf
+  hosts: dns-clients 
+  become: true 
+  become_method: sudo 
+  tasks:
+    - lineinfile:
+        path: /etc/resolv.conf 
+        line: "nameserver 192.168.33.1"
+        state: absent
+        backup: yes
+   

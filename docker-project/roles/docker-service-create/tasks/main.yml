@@ -1,0 +1,5 @@
+---
+  - name: Docker Service Create
+    shell:
+      cmd: "docker service create -p 80:80 --name webservice --replicas 3 httpd"
+  

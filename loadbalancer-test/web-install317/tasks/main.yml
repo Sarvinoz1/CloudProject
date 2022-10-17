@@ -54,10 +54,10 @@
       group: root
       mode: 0777
       
-  - name: Set up Apache VirtualHost
-    template:
-      src: httpd.conf.j2
-      dest: "/etc/httpd/conf.d/http_conf"
+  # - name: Set up Apache VirtualHost
+  #   template:
+  #     src: httpd.conf.j2
+  #     dest: "/etc/httpd/conf.d/http_conf"
 
   - name: Restart apache
     service: 

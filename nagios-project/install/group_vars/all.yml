@@ -4,7 +4,7 @@
 ## Ansible user
 # change this if running Ansible as a non-root user
 # would require sudo, e.g. AWS EC2 uses ec-user
-ansible_system_user: root
+ansible_system_user: ansible
 
 
 ### Firewall management ###
@@ -18,7 +18,7 @@ nagios_plugin_path: /usr/lib64/nagios/plugins
 nagios_username: nagiosadmin
 nagios_password: password
 nagios_create_guest_user: true
-nagios_ro_username: amarupov
+nagios_ro_username: student
 nagios_ro_password: password
 nagios_http_port: 80
 nagios_https_port: 443
@@ -43,10 +43,10 @@ critical_users: 30
 jenkins_port: 8080
 # # set to true if you use a reverse proxy
 # # like nginx for jenkins
-# jenkins_uses_proxy: true
+jenkins_uses_proxy: true
 # # username/pass for reverse proxy auth
-# jenkins_user: jenkinsadmin
-# jenkins_pass: jenkinspass
+jenkins_user: jenkinsadmin
+jenkins_pass: jenkinspass
 
 # # elasticsearch
 elasticsearch_port: 9200

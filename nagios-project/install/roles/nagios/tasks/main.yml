@@ -110,7 +110,7 @@
   with_items:
     - webservers.cfg
     - servers.cfg
-    # - commands.cfg
+    - commands.cfg
     - dns.cfg
  
 

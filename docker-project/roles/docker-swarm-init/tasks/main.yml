@@ -1,14 +1,6 @@
 ---
-  # - name: Check if Swarm has already been Initialized
-  #   shell: docker node ls
-  #   register: swarm_status
-  #   ignore_errors: yes
-  #   when: swarm_status.rc == 0
-  #   tags: swarm
-
   - name: Create primary swarm manager
     shell: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
-    when: swarm_status.rc != 0
     run_once: true
     tags: swarm
 

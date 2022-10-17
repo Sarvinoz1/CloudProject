@@ -1,0 +1,11 @@
+---
+- name: windows user add
+  hosts: all
+  vars:
+    usr_name: 'ansible'
+    usr_password: 'password'
+  tasks:
+    - name: create local user
+      ansible.windows.win_user:
+        name: "{{ usr_name }}"
+        password: "{{ usr_password }}"

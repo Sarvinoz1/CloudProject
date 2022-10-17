@@ -17,7 +17,7 @@ prdx-db116 ansible_host=192.168.33.17
 prdx-haproxy116 ansible_host=192.168.33.21 
 prdx-haproxy117 ansible_host=192.168.33.36
 prdx-ldap11 ansible_host=192.168.33.23		
-prdx-ansible11 ansible_host=192.168.33.24	ansible_user=ansible ansible_password=password
+prdx-ansible11 ansible_host=192.168.33.24 ansible_user=ansible ansible_password=password
 prdx-dmaster11 ansible_host=192.168.33.29	
 prdx-dworker11 ansible_host=192.168.33.30	
 prdx-dworker21 ansible_host=192.168.33.31	
@@ -25,7 +25,7 @@ prdx-db117 ansible_host=192.168.33.32
 
 [webservers]
 prdx-webserver116 ansible_host=192.168.33.18 
-prdx-webserver117	ansible_host=192.168.33.33
+prdx-webserver117 ansible_host=192.168.33.33
 prdx-webserver216 ansible_host=192.168.33.19
 prdx-webserver217 ansible_host=192.168.33.34	
 prdx-webserver316 ansible_host=192.168.33.20
