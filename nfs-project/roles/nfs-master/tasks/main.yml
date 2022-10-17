@@ -1,0 +1,36 @@
+---
+  - name: Install nfs
+    yum:
+      name: nfs-utils*
+      state: present
+
+  - name: enable rpcbind nfslock nfs
+    service:
+      name: "{{ item }}"
+      enabled: yes
+    with_items:
+      - rpcbind
+      - nfslock
+      - nfs
+
+  - name: mkdir
+    file:
+      path: /var/nfs/shared
+      state: directory
+      mode: '775'
+      owner: ansible
+      group: ansible
+
+  - name: exports file
+    lineinfile:
+      path: /etc/exports
+      line: '/var/nfs/shared  192.168.33.0/24(rw,sync,no_root_squash)'
+      state: present
+
+  - name: Configure exportfs
+    template:
+      src: exportfs.j2
+      dest: /etc/exports
+      owner: root
+      group: root
+

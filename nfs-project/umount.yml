@@ -1,0 +1,20 @@
+---
+  - name : NFS Server Configuration
+    become: yes
+    hosts: nfs-clients
+    remote_user: ansible
+    become_method: sudo
+    gather_facts: false
+    tasks: 
+      - name: Unmount
+        shell: umount /clientshare
+
+      - name: Remove file (delete file)
+        file:
+          path: /clientshare/test.txt
+          state: absent
+
+      - name: Recursively remove directory
+        file:
+          path: /clientshare
+          state: absent

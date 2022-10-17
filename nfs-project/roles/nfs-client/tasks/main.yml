@@ -1,0 +1,41 @@
+---
+  - name: install nfs-utils
+    become: true
+    yum: 
+      name: nfs*
+      state: latest
+
+  - name: Restart NFS services in a loop
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: true
+    loop:
+      # - nfs
+      # - nfs-lock
+      - rpcbind
+
+
+  - name: Create a mountable directory if it does not exist
+    file:
+      path: /clientshare
+      state: directory
+      owner: ansible
+      group: ansible
+      mode: '0775'
+
+  - name: Add Shared directory path in the exports file.
+    lineinfile:
+      path: /etc/exports
+      regexp: '^/clientshare'
+      line: '/clientshare   *(rw,sync,no_root_squash)'
+
+  - name: mounting in /etc/fstab
+    lineinfile:
+      path: /etc/fstab
+      regexp: '^192.168.33.16:/var/nfs/shared'
+      line: '192.168.33.16:/var/nfs/shared /clientshare nfs defaults 0 0'
+      state: present
+
+  - name: Mount
+    shell: mount -a

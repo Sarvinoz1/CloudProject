@@ -1,0 +1,17 @@
+---
+  - name: Install Commom Packages
+    become: true
+    yum: 
+      name: 
+        - bind-utils
+        - man
+        - man-pages
+        - mlocate
+        - sysstat
+        - bash-completion
+      state: latest 
+  - name: Enable sysstat
+    service:
+      name: sysstat
+      enabled: true
+      state: started

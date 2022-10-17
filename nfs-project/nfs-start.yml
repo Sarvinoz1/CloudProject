@@ -1,0 +1,20 @@
+---
+  - name : NFS Server Configuration
+    become: yes
+    hosts: nodes
+    remote_user: ansible
+    become_method: sudo
+    # gather_facts: false
+    roles:
+      - install-packages
+      - disable-se-fw
+
+  - name: Configure NFS Master Server
+    hosts: nfs-servers
+    roles:
+      - nfs-master
+
+  - name: Configure NFS client Servers
+    hosts: nfs-clients
+    roles:
+      - nfs-client
