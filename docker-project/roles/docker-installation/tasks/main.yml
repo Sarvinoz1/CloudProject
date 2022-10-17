@@ -22,6 +22,10 @@
         - containerd.io
       state: latest
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2bf9242391d867e9d87e1e54ec74e5c85f666a54
   - name: Start Docker service
     service:
       name: docker
