@@ -35,7 +35,11 @@ defaults
 #---------------------------------------------------------------------
 #HAProxy Monitoring Config
 #---------------------------------------------------------------------
-listen haproxy3-monitoring *:8080                #Haproxy Monitoring run on port 8080
+#HAProxy Monitoring Config
+#---------------------------------------------------------------------
+#haproxy3-monitoring
+    listen stats
+    bind  *:8080                #Haproxy Monitoring run on port 8080
     mode http
     option forwardfor
     option httpclose
@@ -45,8 +49,9 @@ listen haproxy3-monitoring *:8080                #Haproxy Monitoring run on port
     stats uri /stats                             #URL for HAProxy monitoring
     stats realm Haproxy\ Statistics
     stats auth student:password            #User and Password for login to the monitoring dashboard
-    stats admin if TRUE
+   stats admin if TRUE
     default_backend app-main                    #This is optionally for monitoring backend
+
 #---------------------------------------------------------------------
 # FrontEnd Configuration
 #---------------------------------------------------------------------
@@ -60,6 +65,6 @@ frontend main
 #---------------------------------------------------------------------
 backend app-main
     balance roundrobin                                     #Balance algorithm
-    server web001 192.168.33.87:80 check                  #web001
-    server web002 192.168.33.84:80 check                 #web002
-    server web003 192.168.33.85:80 check                 #web003
+    server web004 192.168.33.89:80 check                  #web001
+    server web005 192.168.33.90:80 check                 #web002
+    server web006 192.168.33.91:80 check  

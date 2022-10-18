@@ -1,0 +1,28 @@
+---
+# tasks file for lbrole
+
+- name: Install LB
+  yum:
+    name: haproxy
+    state: present
+    
+- name: Copy HAProxy configuration in place.
+  template:
+      src: "templates/2haproxy.cfg.j2"
+      dest: "/etc/haproxy/haproxy.cfg"
+
+- name: stop Firewall
+  service: 
+    name: firewalld 
+    state: stopped
+
+- name: Disable SELinux without Reboot
+  selinux:
+    state: disabled
+
+
+- name: Enable & start HAPROXY service
+  service:
+    name: haproxy
+    enabled: true
+    state: started

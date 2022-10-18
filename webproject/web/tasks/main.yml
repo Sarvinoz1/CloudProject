@@ -4,7 +4,7 @@
  
 - name: Install inital packages
   yum: 
-    name: ['man' , 'man-pages' , 'mlocate' , 'vim' , 'bind-utils' , 'net-tools']
+    name: ['man' , 'man-pages' , 'mlocate' , 'bind-utils' , 'net-tools']
     state: latest
 
 - name: install latest version of apache 
@@ -79,19 +79,20 @@
 
 - name: Adding content to webserver
   template:
-    src: /ansible/roles/web/files/style.css
+    src: /ansible/webproject/web/files/style.css
     dest: /var/www/html/style.css
     owner: apache
     group: apache
     mode: 0777
     
-- name: Adding content to webserver
-  template:
-    src: /ansible/roles/web/templates/2index.html.j2
-    dest: /var/www/html/index.html
-    owner: root
-    group: root
-    mode: 0777
+# - name: Adding content to webserver
+#   template:
+#     src: /ansible/roles/web/templates/2index.html.j2
+#     dest: /var/www/html/index.html
+#     owner: root
+#     group: root
+#     mode: 0777
+#     remote_src: yes
     
 
   

@@ -6,7 +6,7 @@
   tasks:
     - name: Add web001 after contact line in index.html
       template:
-        src: /ansible/roles/web/templates/2index.html.j2
+        src: /ansible/webproject/web/templates/2index.html.j2
         dest: /var/www/html/index.html
            
 - hosts: web2
@@ -15,9 +15,9 @@
     - web
 
   tasks:
-    - name: Add web001 after contact line in index.html
+    - name: Add web002 after contact line in index.html
       template:
-        src: /ansible/roles/web/templates/3index.html.j2
+        src: /ansible/webproject/web/templates/3index.html.j2
         dest: /var/www/html/index.html
           
 - hosts: web3
@@ -26,9 +26,9 @@
     - web
 
   tasks:
-    - name: Add web001 after contact line in index.html
+    - name: Add web003 after contact line in index.html
       template:
-        src: /ansible/roles/web/templates/4index.html.j2
+        src: /ansible/webproject/web/templates/4index.html.j2
         dest: /var/www/html/index.html
 
 - name: web-servers restart
@@ -42,3 +42,105 @@
     - name: Running haproxy LB role
       include_role: 
        name: lbrole
+- hosts: web1
+  become: yes
+  roles:
+    - web
+    
+  tasks:
+    - name: Add web001 after contact line in index.html
+      template:
+        src: /ansible/webproject/web/templates/2index.html.j2
+        dest: /var/www/html/index.html
+           
+- hosts: web2
+  become: yes
+  roles:
+    - web
+
+  tasks:
+    - name: Add web001 after contact line in index.html
+      template:
+        src: /ansible/webproject/web/templates/3index.html.j2
+        dest: /var/www/html/index.html
+          
+- hosts: web3
+  become: yes
+  roles:
+    - web
+
+  tasks:
+    - name: Add web003 after contact line in index.html
+      template:
+        src: /ansible/webproject/web/templates/4index.html.j2
+        dest: /var/www/html/index.html
+
+# - hosts: web1
+#   become: yes
+#   roles:
+#     - web
+
+#   tasks:
+#     - name: Add image content to node
+#       template:
+#         src: /ansible/webproject/web/files/image/blacklogo.png
+#         dest: /var/www/html/image
+
+- name: web-servers restart
+  hosts: web-servers
+  roles:
+    - restart
+           
+- hosts: lb
+  become: yes
+  tasks:
+    - name: Running haproxy LB role
+      include_role: 
+       name: lbrole
+
+# Web8
+
+- hosts: web4
+  become: yes
+  roles:
+    - web
+    
+  tasks:
+    - name: Add web004 after contact line in index.html
+      template:
+        src: /ansible/webproject/web/templates/5index.html.j2
+        dest: /var/www/html/index.html
+           
+- hosts: web5
+  become: yes
+  roles:
+    - web
+
+  tasks:
+    - name: Add web005 after contact line in index.html
+      template:
+        src: /ansible/webproject/web/templates/6index.html.j2
+        dest: /var/www/html/index.html
+          
+- hosts: web6
+  become: yes
+  roles:
+    - web
+
+  tasks:
+    - name: Add web006 after contact line in index.html
+      template:
+        src: /ansible/webproject/web/templates/7index.html.j2
+        dest: /var/www/html/index.html
+
+- name: web-servers restart
+  hosts: web-servers
+  roles:
+    - restart
+           
+- hosts: lb2
+  become: yes
+  tasks:
+    - name: Running haproxy LB role
+      include_role: 
+       name: lbrole2
