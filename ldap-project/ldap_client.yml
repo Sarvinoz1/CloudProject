@@ -1,0 +1,37 @@
+---
+- name: Configure LDAP client
+  tags: ldap_client_config
+  become: true
+  hosts: DNSMASTER DNSWORKER NFS DB WEBSERVER LOADBALANCER NAGIOS NTP FTP DOCKERWORKER DOCKERMASTER localhost
+  tasks: 
+
+  - name: Install LDAP Clients
+    yum:
+      name: 
+      - openldap-clients
+      - nss-pam-ldapd
+      - nss-pam-ldapd
+
+  - name: Disable SElinux
+    replace:
+      path: /etc/selinux/config
+      regexp: 'SELINUX=enforcing'
+      replace: 'SELINUX=disabled'    
+
+  - name: Create a directory called /etc/openldap/cacerts
+    ansible.builtin.file:
+      path: /etc/openldap/cacerts
+      state: directory
+      mode: '0755' 
+
+  - name: Download CA.crt 
+    ansible.builtin.get_url:
+      url: http://prdx-ldap11.ziyotek1.local/CA.crt
+      dest: /etc/openldap/cacerts
+      mode: '0755'  
+
+  - name: authconfig-tui
+    command: authconfig --enableldap --enableldapauth --ldapserver=prdx-ldap11.ziyotek1.local --ldapbasedn="dc=ziyotek1,dc=local" --enableldaptls --update 
+
+  - name: Enable automatic home directory creation
+    command: authconfig --enablemkhomedir --update

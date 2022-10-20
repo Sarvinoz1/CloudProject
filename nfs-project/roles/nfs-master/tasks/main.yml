@@ -1,7 +1,7 @@
 ---
   - name: Install nfs
     yum:
-      name: nfs-utils*
+      name: nfs-utils
       state: present
 
   - name: enable rpcbind nfslock nfs
@@ -16,6 +16,14 @@
   - name: mkdir
     file:
       path: /var/nfs/shared
+      state: directory
+      mode: '775'
+      owner: ansible
+      group: ansible
+
+  - name: mkdir
+    file:
+      path: /home/users
       state: directory
       mode: '775'
       owner: ansible

@@ -7,7 +7,7 @@
 - name: Add user ftpuser
   user:
     name: "ftpuser"
-    password: "password"
+    password: "$1$2y0s5jU3$kp/bwGEQ.6ojtFoQIqIfy/"
     state: present
 
 - name: Adding line into /etc/vsftpd/vsftpd.conf.

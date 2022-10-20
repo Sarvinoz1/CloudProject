@@ -18,3 +18,8 @@
     hosts: nfs-clients
     roles:
       - nfs-client
+
+  - name: Configure NFS client Servers
+    hosts: nfs-client8
+    roles:
+      - nfs-client8      

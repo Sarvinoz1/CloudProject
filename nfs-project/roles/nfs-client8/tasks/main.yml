@@ -2,7 +2,9 @@
   - name: install nfs-utils
     become: true
     yum: 
-      name: nfs-utils
+      name: 
+        - nfs-utils 
+        - nfs4-acl-tools
       state: latest
 
   - name: Restart NFS services in a loop
@@ -11,7 +13,7 @@
       state: started
       enabled: true
     loop:
-      - nfs
+      #- nfs
       - nfs-utils
       # - nfs-lock
       - rpcbind

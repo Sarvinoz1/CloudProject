@@ -1,0 +1,21 @@
+---   
+- name: date variable
+      shell: date +%Y%m%d
+      register: date
+
+- name: serial change
+      lineinfile:
+        path: /var/named/ziyotek3.flz
+        regex: 'serial$'
+        line: '                                        {{ date.stdout }}   ; serial'
+
+- name: serial change
+      lineinfile:
+        path: /var/named/ziyotek3.rlz
+        regex: 'serial$'
+        line: '                                        {{ date.stdout }}   ; serial'
+
+- name: Reload named
+      service:
+        name: named
+        state: reloaded
